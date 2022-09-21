@@ -28,21 +28,21 @@ public class TestController {
 	//메소드의 파라미터에도 어노테이션이 올 수 있다.
 	@GetMapping("testList")
 	public String testList(@RequestParam Map<String,Object> pmap, Model model) {
-		logger.info(pmap.toString());
+		logger.info(pmap.toString()); 
 		List<Map<String,Object>> testList = null;
 		testList = testLogic.testList(pmap);
 		logger.info(testList.toString());
 		return "forward:testList.jsp";
 		//return "test/testList";
 	}
-	//localhost:9000/step1/test/testDeleteAll.sp4?deptnos=1/2/3
+	//localhost:9000/step1/test/testDeleteAll.sp4?testnos=1/2/3
 	@GetMapping("testDeleteAll")
-	public String testDeleteAll(@RequestParam String testnos) {
+	public String testDeleteAll(@RequestParam String testnos) { // testnos 가 파라미터의 이름이다.
 		logger.info(testnos);
 		String atestnos[] = null;
 		atestnos = testnos.split("/");
 		testLogic.testDeleteAll(atestnos);
-		return "redirect:testList.sp4";
+		return "redirect:testList.sp4"; // 앞에 test/ 붙음
 		//return "test/testList";
 	}	
 	//localhost:9000/step1/test/testInsertAll.sp4

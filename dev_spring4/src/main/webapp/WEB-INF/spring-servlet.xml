@@ -2,24 +2,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean id ="default-handler-mapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
-	<!-- BeanNameUrlHandlerMapping이 bean의 name과 url을 연결시켜준다. -->
+	<bean id="default-handler-mapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+	<bean name="/di/myCar.sp" class="com.di.Pride"/>	
 	<bean name="/di/insaList.sp" class="com.di.ListController">
-	<!-- property 이름은 반드시 setter메소드의 이름과 같아야 한다 -->
- 		<property name="insaBean"> <!-- setter 주입법 -->
+	<!-- property의 이름은 setter메소드이름과 반드시(꼭) 같아야 한다 -->
+		<property name="insaBean">
 			<list>
-				<value>Hi!</value>
-				<value>Hava a good time!</value>
-				<value>Hava a nice day!</value>
+				<value>Hi!!!</value>
+				<value>Have a good time!</value>
+				<value>Have a nice day!</value>
 			</list>
 		</property>
 	</bean>
 	<bean name="/di/insaMap.sp" class="com.di.MapController">
- 		<property name="insaMsg"> <!-- setter 주입법 -->
+	<!-- property의 이름은 setter메소드이름과 반드시(꼭) 같아야 한다 -->
+		<property name="insaMsg">
 			<map>
 				<entry>
 					<key><value>one</value></key>
-					<value>안녕</value>
+					<value>안녕!</value>
 				</entry>
 				<entry>
 					<key><value>two</value></key>
@@ -32,19 +33,38 @@
 			</map>
 		</property>
 	</bean>
-<!-- 	<bean id="default-handler-mapping" 
-		<bean name="/di/myCar.sp" class="com.di.Pride"/>	
-			class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
-	name은 url 요청에 대해서 받는다(RequestMapping과 같은 역할) -> class는 nameUrl 요청에 대해서 처리할 클래스 
-	<bean name="/di/hello.sp" class="com.spring4.mvc.HelloController"/> -->
 	<bean id="url-mapping"
 			class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 			<property name="mappings">
 				<props>
 					<prop key="/login.sp">auth-controller</prop>
+					<prop key="/doEmp.sp">emp-controller</prop>
+					<prop key="/board/jsonBoardList.sp">board-controller</prop>
+					<prop key="/board/boardList.sp">board-controller</prop>
+					<prop key="/board/boardDetail.sp">board-controller</prop>
+					<prop key="/board/boardInsert.sp">board-controller</prop>
+					<prop key="/board/boardUpdate.sp">board-controller</prop>
+					<prop key="/board/boardDelete.sp">board-controller</prop>
 				</props>
 			</property>
-	</bean>				
+	</bean>		
+			
+  	<bean id="board-controller" class="com.spring4.mvc.BoardController">
+  		<property name="methodNameResolver" ref="board-resolver"/>
+  		<property name="boardLogic" ref="board-logic"/>
+  	</bean>
+	<bean id="board-resolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+		<property name="mappings">
+			<props>
+				<prop key="/board/jsonBoardList.sp">jsonBoardList</prop>
+				<prop key="/board/boardList.sp">boardList</prop>
+				<prop key="/board/boardDetail.sp">boardDetail</prop>
+				<prop key="/board/boardInsert.sp">boardInsert</prop>
+				<prop key="/board/boardUpdate.sp">boardUpdate</prop>
+				<prop key="/board/boardDelete.sp">boardDelete</prop>
+			</props>
+		</property>
+	</bean>	  	
   	<bean id="auth-controller" class="com.spring4.mvc.AuthController">
 		<property name="methodNameResolver" ref="auth-resolver"/>
 		<!-- property의 name은 setter객체주입법 코드의 이름이어야 합니다. -->
@@ -57,10 +77,25 @@
 			</props>
 		</property>
 	</bean>	
+  	<bean id="emp-controller" class="com.spring4.tr.EmpController">
+		<property name="methodNameResolver" ref="emp-resolver"/>
+		<!-- property의 name은 setter객체주입법 코드의 이름이어야 합니다. -->
+		<property name="empLogic" ref="emp-logic"/>
+  	</bean>
+	<bean id="emp-resolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+		<property name="mappings">
+			<props>
+				<prop key="/doEmp.sp">doEmp</prop>
+			</props>
+		</property>
+	</bean>	
+	<bean name="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>	
 	<!-- ModelAndView 사용시 배포 위치에 대한 선언 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
-	</bean>	
+	</bean>
 </beans>
-
